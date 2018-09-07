@@ -1,5 +1,6 @@
 import unittest
 from test.load_csv import LoadDataFile
+from test.rest_requests.browse_po import BrowsePo
 from ddt import ddt, idata
 
 
@@ -12,6 +13,8 @@ class Test(unittest.TestCase):
 
     @idata(po_list())
     def test_to_validate_po_configs(self, value):
+        self.browsePo = BrowsePo(value[12], value[19])
+        self.result = self.browsePo.connect_and_request_information()
         print(value)
 
 

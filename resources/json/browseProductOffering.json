@@ -1,0 +1,8 @@
+{
+  "provideOnlyFeasible": true,
+  "provideFeasibilityFailureReason": false,
+  "eligibilityDate": "",
+  "expand": "ProductOffering",
+  "channel" : "customerCare",
+  "filterCriterion": ""
+}
