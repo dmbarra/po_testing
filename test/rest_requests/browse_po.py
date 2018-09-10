@@ -21,6 +21,8 @@ class BrowsePo:
         self.load_json_from_file()
         self.create_filter_criteria()
         self.configure_elegibility_date()
+        self.result = self.connect_and_request_information()
+        self.json_response = json.loads(self.result.text)
 
     def load_json_from_file(self):
         with open(JSON_FILE) as f:
@@ -30,7 +32,20 @@ class BrowsePo:
         self.payload["filterCriterion"] = FILTER_CATEGORY + "[" + self.po_category + "]," + FILTER_NAME + "[" + self.po_name + "]"
 
     def configure_elegibility_date(self):
-        self.payload["eligibilityDate"] = datetime.datetime.now().isoformat()
+        self.payload["eligibilityDate"] = datetime.datetime.now().strftime("%Y-%m-%dT%H:%M:%SZ")
 
     def connect_and_request_information(self):
-        return requests.post(config.get('CPI', 'address') + URL, self.payload)
+        headers = {'Content-Type': 'application/json'}
+        return requests.post(config.get('CPI', 'address') + URL, json.dumps(self.payload), headers)
+
+    def return_status_code_from_response(self):
+        return self.result.status_code
+
+    def return_is_bundle_from_response(self):
+        return str(self.json_response['productOfferingQualificationItem'][0]['productOffering']['isBundle'])
+
+    def return_product_specification_from_response(self):
+        return self.json_response['productOfferingQualificationItem'][0]['productOffering']['productSpecification']['name']
+
+    def return_po_id_from_response(self):
+        return self.json_response['productOfferingQualificationItem'][0]['productOffering']['id']
